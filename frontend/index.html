@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#101820">
+  <title>Severe Weather Operations</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header class="topbar">
+    <div><div class="eyebrow">SIMULATION CENTER · TRAINING ENVIRONMENT</div><h1>Severe Weather Operations</h1></div>
+    <div class="clock"><span class="live-dot"></span><span id="sim-time">18:00Z</span><small>SIMULATED UTC</small></div>
+  </header>
+  <main class="layout">
+    <section class="map-panel panel">
+      <div class="panel-head"><div><span class="eyebrow">REGIONAL RADAR</span><h2>Central Plains</h2></div><span class="pill">SIM MODE</span></div>
+      <div class="map-wrap">
+        <div class="map-grid" id="map-grid" aria-label="Simulated radar map">
+          <div class="map-label label-nw">NORTHWEST</div><div class="map-label label-ne">NORTHEAST</div>
+          <div class="map-label label-sw">SOUTHWEST</div><div class="map-label label-se">SOUTHEAST</div>
+          <div class="state-line line-one"></div><div class="state-line line-two"></div><div class="state-line line-three"></div>
+          <div class="storm storm-a" title="Storm A"></div><div class="storm storm-b" title="Storm B"></div>
+          <div class="storm-core core-a"></div><div class="storm-core core-b"></div>
+          <div class="storm-track"></div>
+          <div class="city city-one">DODGE CITY</div><div class="city city-two">SALINA</div><div class="city city-three">WICHITA</div>
+          <div class="radar-site">K</div>
+          <div class="map-footer">REFLECTIVITY · SIMULATED dBZ</div>
+        </div>
+      </div>
+      <div class="legend"><span><i class="legend-swatch green"></i>Light</span><span><i class="legend-swatch yellow"></i>Moderate</span><span><i class="legend-swatch red"></i>Strong</span><span><i class="legend-swatch purple"></i>Very strong</span></div>
+      <div class="map-controls"><button id="advance-btn" class="button secondary">▶ Advance 5 min</button><button id="reset-btn" class="button ghost">Reset scenario</button></div>
+    </section>
+    <aside class="side-column">
+      <section class="panel storm-panel"><div class="panel-head"><div><span class="eyebrow">CONVECTIVE MONITOR</span><h2>Storm reports</h2></div><span id="storm-count" class="count">02</span></div>
+        <button class="storm-row selected" data-storm="A"><span class="storm-icon">A</span><span><strong>Storm A</strong><small>Supercell · moving NE</small></span><b id="storm-a-speed">35 kt</b></button>
+        <button class="storm-row" data-storm="B"><span class="storm-icon storm-icon-b">B</span><span><strong>Storm B</strong><small>Multicell · moving E</small></span><b>25 kt</b></button>
+        <div class="metrics"><div><small>MAX REFLECTIVITY</small><strong id="max-dbz">62 <em>dBZ</em></strong></div><div><small>ENVIRONMENT</small><strong>Unstable</strong></div></div>
+      </section>
+      <section class="panel products-panel"><div class="panel-head"><div><span class="eyebrow">FORECAST DESK</span><h2>Issue a product</h2></div></div>
+        <label for="product-type">Product type</label><select id="product-type"><option value="Watch">Severe Thunderstorm Watch</option><option value="Warning">Severe Thunderstorm Warning</option><option value="Statement">Storm Statement</option><option value="Discussion">Mesoscale Discussion</option></select>
+        <label for="product-area">Affected area</label><select id="product-area"><option>Central Kansas</option><option>South-central Kansas</option><option>North-central Kansas</option><option>Entire forecast area</option></select>
+        <label for="product-text">Forecaster note</label><textarea id="product-text" rows="2" placeholder="Describe the simulated threat..."></textarea>
+        <button id="issue-btn" class="button primary">＋ Issue simulated product</button>
+        <p class="fine-print">Training only. Products are fictional and do not represent official alerts.</p>
+      </section>
+    </aside>
+    <section class="panel active-panel"><div class="panel-head"><div><span class="eyebrow">OPERATIONAL LOG</span><h2>Active products</h2></div><span id="product-count" class="pill">0 ACTIVE</span></div><div id="product-list" class="product-list"><div class="empty-state">No products issued. Monitor the storms and issue a product when ready.</div></div></section>
+    <section class="panel log-panel"><div class="panel-head"><div><span class="eyebrow">EVENT TIMELINE</span><h2>Recent activity</h2></div></div><ol id="event-log" class="event-log"><li><time>18:00Z</time><span>Scenario initialized. Two simulated storms detected.</span></li></ol></section>
+  </main>
+  <footer>SEVERE WEATHER OPERATIONS · PROTOTYPE 0.1 · FICTIONAL TRAINING DATA</footer>
+  <script src="js/main.js"></script>
+</body>
+</html>
