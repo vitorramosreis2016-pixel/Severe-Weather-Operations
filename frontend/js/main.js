@@ -78,6 +78,31 @@
     $(selector).addEventListener("input", updateModelGuidance);
     $(selector).addEventListener("change", updateModelGuidance);
   });
+  function updateModelGuidance() {
+    const model = $("#model-name").value;
+    const run = $("#model-run").value;
+    const field = $("#model-field").value;
+    const hour = Number($("#forecast-hour").value);
+    const fieldLabels = {
+      reflectivity: "Simulated reflectivity",
+      cape: "CAPE",
+      shear: "0–6 km bulk shear",
+      precip: "Accumulated precipitation"
+    };
+    const descriptions = {
+      reflectivity: hour < 6 ? "Scattered simulated convection; monitor initiation zones." : hour < 18 ? "Organized simulated storm clusters are possible in the scenario." : "Later forecast hours have greater uncertainty in storm placement.",
+      cape: hour < 12 ? "Synthetic instability field: use as environmental context, not a tornado prediction." : "Synthetic instability evolves with forecast time; values are illustrative, not observed or model-derived.",
+      shear: "Illustrative wind-shear guidance for training. It is not calculated from a real model profile.",
+      precip: hour < 12 ? "Synthetic precipitation signal is still developing in this scenario." : "Illustrative accumulated precipitation footprint; no real forecast data are loaded."
+    };
+    $("#forecast-hour-label").textContent = "F" + String(hour).padStart(3, "0");
+    $("#model-summary-title").textContent = model + " · " + run + " · F" + String(hour).padStart(3, "0");
+    $("#model-summary-text").textContent = fieldLabels[field] + ": " + descriptions[field];
+  }
+  ["#model-name", "#model-run", "#model-field", "#forecast-hour"].forEach(selector => {
+    $(selector).addEventListener("input", updateModelGuidance);
+    $(selector).addEventListener("change", updateModelGuidance);
+  });
   function advance() {
     minutes += 5;
     stormStep += 1;
@@ -129,4 +154,5 @@
     renderProducts();
   });
   $("#sim-time").textContent = timeLabel();
+  updateModelGuidance();
 })();
