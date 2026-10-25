@@ -549,3 +549,18 @@ footer{
     gap:9px
   }
 }
+
+/* Model guidance controls: all values are explicitly simulated, not real model output. */
+.model-panel { grid-column: 1 / -1; }
+.model-controls { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:12px; }
+.model-controls label,.forecast-step label { display:block; margin:0 0 7px; color:var(--muted); font:10px 'DM Mono',monospace; letter-spacing:.5px; }
+.model-controls select { width:100%; background:#0e171e; border:1px solid #2c404d; border-radius:6px; color:var(--text); padding:10px; font:12px Inter,sans-serif; }
+.forecast-step { margin-top:18px; }
+.forecast-step label { display:flex; justify-content:space-between; align-items:center; }
+.forecast-step label strong { color:var(--cyan); font:500 12px 'DM Mono',monospace; }
+.forecast-step input { width:100%; accent-color:var(--cyan); }
+.range-labels { display:flex; justify-content:space-between; color:var(--muted); font:10px 'DM Mono',monospace; }
+.model-summary { margin-top:15px; padding:12px; border:1px solid var(--line); border-radius:8px; background:#0e171e; }
+.model-summary strong { color:var(--cyan); font:500 12px 'DM Mono',monospace; }
+.model-summary p { margin:7px 0 0; color:var(--muted); font-size:12px; line-height:1.5; }
+@media(max-width:600px) { .model-controls { grid-template-columns:1fr; } }
