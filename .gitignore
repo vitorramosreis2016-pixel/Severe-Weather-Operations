@@ -1,0 +1,101 @@
+# ==============================
+# Python
+# ==============================
+__pycache__/
+*.py[cod]
+*.pyo
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.venv/
+venv/
+env/
+
+# ==============================
+# Fortran / compilação
+# ==============================
+*.o
+*.obj
+*.mod
+*.smod
+*.a
+*.so
+*.dll
+*.exe
+*.out
+
+# ==============================
+# CMake / build
+# ==============================
+build/
+cmake-build-*/
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+Makefile
+
+# ==============================
+# JavaScript / Node.js
+# ==============================
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+pnpm-debug.log*
+
+# ==============================
+# IDEs e editores
+# ==============================
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# ==============================
+# Sistema operacional
+# ==============================
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ==============================
+# Configurações privadas
+# ==============================
+.env
+.env.*
+!.env.example
+
+# ==============================
+# Logs e arquivos temporários
+# ==============================
+*.log
+*.tmp
+*.bak
+*.old
+
+# ==============================
+# Dados e resultados meteorológicos
+# ==============================
+data/raw/
+data/interim/
+outputs/
+runs/
+wrfout*
+wrfrst*
+met_em*
+geo_em*
+wrfbdy*
+wrfinput*
+*.grb
+*.grib
+*.grb2
+*.nc
+*.nc4
+*.h5
+
+# ==============================
+# Cobertura de testes
+# ==============================
+.coverage
+htmlcov/
