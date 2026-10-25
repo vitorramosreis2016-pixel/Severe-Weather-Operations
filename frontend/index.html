@@ -31,6 +31,16 @@
       <div class="legend"><span><i class="legend-swatch green"></i>Light</span><span><i class="legend-swatch yellow"></i>Moderate</span><span><i class="legend-swatch red"></i>Strong</span><span><i class="legend-swatch purple"></i>Very strong</span></div>
       <div class="map-controls"><button id="advance-btn" class="button secondary">▶ Advance 5 min</button><button id="reset-btn" class="button ghost">Reset scenario</button></div>
     </section>
+    <section class="panel model-panel">
+      <div class="panel-head"><div><span class="eyebrow">NUMERICAL GUIDANCE</span><h2>Model runs</h2></div><span class="pill">SIMULATED DATA</span></div>
+      <div class="model-controls">
+        <div><label for="model-name">Model</label><select id="model-name"><option value="GFS">GFS</option><option value="ECMWF">ECMWF</option><option value="ICON">ICON</option></select></div>
+        <div><label for="model-run">Run (UTC)</label><select id="model-run"><option>00Z</option><option>06Z</option><option selected>12Z</option><option>18Z</option></select></div>
+        <div><label for="model-field">Forecast field</label><select id="model-field"><option value="reflectivity">Simulated reflectivity</option><option value="cape">CAPE</option><option value="shear">0–6 km bulk shear</option><option value="precip">Accumulated precipitation</option></select></div>
+      </div>
+      <div class="forecast-step"><label for="forecast-hour">Forecast hour <strong id="forecast-hour-label">F006</strong></label><input id="forecast-hour" type="range" min="0" max="48" step="3" value="6"><div class="range-labels"><span>F000</span><span>F024</span><span>F048</span></div></div>
+      <div class="model-summary" aria-live="polite"><strong id="model-summary-title">GFS · 12Z · F006</strong><p id="model-summary-text">Simulated guidance only. Select a field and forecast hour to inspect the scenario.</p></div>
+    </section>
     <aside class="side-column">
       <section class="panel storm-panel"><div class="panel-head"><div><span class="eyebrow">CONVECTIVE MONITOR</span><h2>Storm reports</h2></div><span id="storm-count" class="count">02</span></div>
         <button class="storm-row selected" data-storm="A"><span class="storm-icon">A</span><span><strong>Storm A</strong><small>Supercell · moving NE</small></span><b id="storm-a-speed">35 kt</b></button>
