@@ -588,3 +588,17 @@ footer{
 .wind-metrics{display:flex;flex-wrap:wrap;gap:28px;margin-top:18px;padding-top:14px;border-top:1px solid var(--line)}
 .wind-metrics div{display:grid;gap:6px}.wind-metrics small{color:var(--muted);font:10px 'DM Mono',monospace}.wind-metrics strong{font:600 14px 'DM Mono',monospace;color:var(--cyan)}
 @media(max-width:600px){.wind-grid{grid-template-columns:1.2fr 1fr 1fr}.wind-grid label{font-size:10px}.wind-metrics{gap:14px}}
+
+/* Environment import and operational product lifecycle */
+.environment-panel { grid-column:1/-1; }
+.environment-actions { display:flex; flex-wrap:wrap; align-items:center; gap:9px; margin:14px 0; }
+#environment-file { position:absolute; width:1px; height:1px; opacity:0; overflow:hidden; }
+.environment-status { padding:10px 12px; border:1px solid var(--line); border-radius:7px; background:#0e171e; color:var(--cyan); font:11px 'DM Mono',monospace; }
+.environment-metrics { display:flex; flex-wrap:wrap; gap:28px; margin-top:14px; }
+.environment-metrics div { display:grid; gap:6px; }
+.environment-metrics small { color:var(--muted); font:10px 'DM Mono',monospace; }
+.environment-metrics strong { color:var(--cyan); font:600 14px 'DM Mono',monospace; }
+.product-actions { flex-wrap:wrap; }
+.product-actions button { font:10px Inter,sans-serif; }
+.products-panel optgroup { color:var(--cyan); }
+@media(max-width:600px) { .environment-metrics { gap:14px; } .product-actions { gap:6px; } }
