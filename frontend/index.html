@@ -32,6 +32,14 @@
       <div class="radar-toolbar"><label for="radar-mode">Radar product</label><select id="radar-mode"><option value="reflectivity">Reflectivity (dBZ)</option><option value="velocity">Storm-relative velocity (SRV)</option></select></div><div class="map-controls"><button id="advance-btn" class="button secondary">▶ Advance 5 min</button><button id="reset-btn" class="button ghost">Reset scenario</button></div>
     </section>
     <section class="panel environment-panel"><div class="panel-head"><div><span class="eyebrow">ENVIRONMENT INPUT</span><h2>Models-Sandbox connection</h2></div><span class="pill">IMPORT</span></div><p class="wind-intro">O S.W.O. recebe os parâmetros ambientais preparados no Models-Sandbox. Não edite o perfil de vento aqui.</p><div class="environment-actions"><label class="button secondary" for="environment-file">Import environment JSON</label><input id="environment-file" type="file" accept=".json,application/json"><button id="clear-environment" class="button ghost" type="button">Clear imported data</button></div><div id="environment-status" class="environment-status">No environment imported · Using scenario defaults</div><div class="environment-metrics"><div><small>CAPE</small><strong id="env-cape">—</strong></div><div><small>0–6 KM SHEAR</small><strong id="env-shear">—</strong></div><div><small>0–3 KM SRH</small><strong id="env-srh">—</strong></div></div><p class="fine-print">Importação JSON experimental. Os dados importados contextualizam a simulação; não são observações em tempo real.</p></section>
+    <section class="panel nc-panel">
+      <div class="panel-head"><div><span class="eyebrow">MODEL DATA IMPORT</span><h2>NetCDF files (.nc)</h2></div><span class="pill">NETCDF</span></div>
+      <p class="wind-intro">Importe saídas do CM1, WRF ou outros modelos em formato NetCDF clássico para inspecionar dimensões, variáveis e metadados.</p>
+      <div class="environment-actions"><label class="button secondary" for="netcdf-file">📂 Import .nc file</label><input id="netcdf-file" type="file" accept=".nc,application/octet-stream"></div>
+      <div id="netcdf-status" class="environment-status" role="status">No NetCDF file loaded.</div>
+      <div id="netcdf-details" class="model-summary" hidden></div>
+      <p class="fine-print">Leitura local no navegador. Esta primeira versão aceita NetCDF clássico (CDF-1/CDF-2/CDF-5). NetCDF-4/HDF5 ainda não é suportado. Arquivos grandes podem consumir bastante memória.</p>
+    </section>
     <section class="panel model-panel">
       <div class="panel-head"><div><span class="eyebrow">NUMERICAL GUIDANCE</span><h2>Model runs</h2></div><span class="pill">SIMULATED DATA</span></div>
       <div class="model-controls">
