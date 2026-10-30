@@ -95,8 +95,7 @@
           status.textContent="Lendo trecho de "+variable.name+"…";
           const values=await readVariable(file,meta,variable,Number(time.value));
           const valid=values.filter(Number.isFinite);
-          const min=valid.length?Math.min(...valid.slice(0,100000)):NaN;
-          const max=valid.length?Math.max(...valid.slice(0,100000)):NaN;
+          let min=Infinity,max=-Infinity; for(let i=0;i<Math.min(valid.length,100000);i++){if(valid[i]<min)min=valid[i];if(valid[i]>max)max=valid[i];} if(!valid.length)min=max=NaN;
           output.textContent="Leitura parcial concluída. Valores lidos: "+values.length+"; amostra inicial: "+values.slice(0,12).join(", ")+"; mínimo/máximo da amostra: "+min+" / "+max+".";
           status.textContent="Cabeçalho carregado; trecho da variável lido com sucesso.";
         }catch(e){status.textContent="Não foi possível ler essa variável: "+e.message;output.textContent="Dica: variáveis muito grandes precisam ser reduzidas por dimensão/nível antes da leitura.";}
