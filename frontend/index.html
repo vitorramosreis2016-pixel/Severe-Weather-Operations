@@ -36,7 +36,7 @@
       <div class="panel-head"><div><span class="eyebrow">MODEL DATA IMPORT</span><h2>NetCDF files (.nc)</h2></div><span class="pill">NETCDF</span></div>
       <p class="wind-intro">Importe saídas do CM1, WRF ou outros modelos em formato NetCDF clássico para inspecionar dimensões, variáveis e metadados.</p>
       <div class="environment-actions"><label class="button secondary" for="netcdf-file">📂 Import .nc file</label><input id="netcdf-file" type="file" accept=".nc,application/octet-stream"></div>
-      <div id="netcdf-status" class="environment-status" role="status">No NetCDF file loaded.</div>
+      <div id="netcdf-status" class="environment-status" role="status">NetCDF CDF-2 reader v2 ready. Select a .nc file.</div>
       <div id="netcdf-details" class="model-summary" hidden></div>
       <p class="fine-print">Leitura local no navegador. Esta primeira versão aceita NetCDF clássico (CDF-1/CDF-2/CDF-5). NetCDF-4/HDF5 ainda não é suportado. Arquivos grandes podem consumir bastante memória.</p>
     </section>
@@ -88,6 +88,6 @@
   <footer>SEVERE WEATHER OPERATIONS · PROTOTYPE 0.1 · FICTIONAL TRAINING DATA</footer>
   <script type="module" src="js/main.js"></script>
   <script type="module" src="js/radar.js"></script>
-  <script type="module" src="js/netcdf.js"></script>
+  <script type="module" src="js/netcdf.js?v=86ea6c5"></script>
 </body>
 </html>
