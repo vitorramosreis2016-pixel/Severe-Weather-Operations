@@ -1,31 +1,150 @@
-(()=>{
-const $=s=>document.querySelector(s);
-let minutes=1080,step=0,products=[],nextId=1,selectedStorm="A",environment=null;
-const log=$("#event-log"),A={x:.48,y:.39,rotation:0,dbz:62,updraft:.72,motion:35},B={x:.24,y:.68,rotation:0,dbz:48,motion:25};
-const time=()=>String(Math.floor(minutes/60)%24).padStart(2,"0")+":"+String(minutes%60).padStart(2,"0")+"Z";
-function note(message){const li=document.createElement("li"),t=document.createElement("time"),v=document.createElement("span");t.textContent=time();v.textContent=message;li.append(t,v);log.prepend(li)}
-function env(){return environment?{shear:environment.shear||0,srh:environment.srh||0,cape:environment.cape||0}:{shear:35,srh:150,cape:1800}}
-function showEnvironment(){const e=env();$("#env-cape").textContent=environment?(e.cape+" J/kg"):"Default";$("#env-shear").textContent=environment?(e.shear+" kt"):"Default";$("#env-srh").textContent=environment?(e.srh+" m²/s²"):"Default";$("#environment-status").textContent=environment?"Imported · "+(environment.label||"Models-Sandbox environment"):"No environment imported · Using scenario defaults"}
-function radar(){const mode=$("#radar-mode").value;$("#radar-footer").textContent=mode==="velocity"?"STORM-RELATIVE VELOCITY · SIMULATED":"REFLECTIVITY · SIMULATED dBZ";$("#max-dbz").innerHTML=Math.round(A.dbz)+' <em>dBZ</em>';$("#storm-a-speed").textContent=Math.round(A.motion)+" kt";window.SWO?.updateRadar({mode,storms:[{...A,id:"A"},{...B,id:"B"}],selectedStorm})}
-function models(){const m=$("#model-name").value,r=$("#model-run").value,f=$("#model-field").value,h=+$("#forecast-hour").value;$("#forecast-hour-label").textContent="F"+String(h).padStart(3,"0");$("#model-summary-title").textContent=m+" · "+r+" · F"+String(h).padStart(3,"0");$("#model-summary-text").textContent=({reflectivity:"Simulated convective reflectivity.",cape:"Synthetic instability, not observed.",shear:"Illustrative environmental wind shear.",precip:"Synthetic accumulated precipitation."})[f]+" Fictional training data."}
-function usesSevereParams(type){return type==="Special Weather Statement"||type==="Severe Thunderstorm Warning"}
-function usesRainParams(type){return ["Flash Flood Warning","Flash Flood Emergency","Flood Advisory"].includes(type)}
-function refreshRainParams(){const show=usesRainParams($("#product-type").value);$("#rainfall-parameters").hidden=!show}
-function readRainParams(type){if(!usesRainParams(type))return{rainBefore:null,rainForecast:null};const before=$("#rain-before").value,forecast=$("#rain-forecast").value;if(before===""||forecast==="")return{error:"Enter rainfall already received and additional rainfall expected."};const rainBefore=Number(before),rainForecast=Number(forecast);if(!Number.isFinite(rainBefore)||rainBefore<0||rainBefore>100)return{error:"Rainfall before alert must be between 0 and 100 inches."};if(!Number.isFinite(rainForecast)||rainForecast<=0||rainForecast>100)return{error:"Additional expected rainfall must be greater than 0 and no more than 100 inches."};return{rainBefore,rainForecast}}
-function refreshSevereParams(){const show=usesSevereParams($("#product-type").value);$("#severe-parameters").hidden=!show;$("#product-threat").value=show?"Large hail":$("#product-threat").value}
-function readSevereParams(){if(!usesSevereParams($("#product-type").value))return{hailSize:null,windSpeed:null};const hail=$("#hail-size").value,wind=$("#wind-speed").value;if(hail===""||wind==="")return{error:"Enter both hail size and wind gust."};const hailSize=Number(hail),windSpeed=Number(wind);if(!Number.isFinite(hailSize)||hailSize<=0||hailSize>8)return{error:"Hail size must be greater than 0 and no more than 8 inches."};if(!Number.isFinite(windSpeed)||windSpeed<=0||windSpeed>250)return{error:"Wind gust must be greater than 0 and no more than 250 mph."};return{hailSize,windSpeed}}
-function renderProducts(){const list=$("#product-list"),active=products.filter(p=>p.active);list.replaceChildren();$("#product-count").textContent=active.length+" ACTIVE";if(!active.length){const e=document.createElement("div");e.className="empty-state";e.textContent="No products active. Monitor the storms and issue a product when ready.";list.append(e);return}active.slice().reverse().forEach(p=>{const c=document.createElement("article");c.className="product-card";const top=document.createElement("div");top.className="product-top";const title=document.createElement("strong");title.textContent=p.type+" · "+p.area;const status=document.createElement("span");status.className="status";status.textContent=(p.type.includes("Discussion")||p.type.includes("(MCD)")||p.type.includes("(MPD)"))?"DISCUSSION":"ACTIVE";top.append(title,status);const meta=document.createElement("p");meta.textContent="Threat: "+p.threat+(p.hailSize!==null&&p.hailSize!==undefined?" · Hail: "+p.hailSize.toFixed(2)+" in":"")+(p.windSpeed!==null&&p.windSpeed!==undefined?" · Wind: "+p.windSpeed+" mph":"")+(p.rainBefore!==null&&p.rainBefore!==undefined?" · Already fallen: "+p.rainBefore.toFixed(2)+" in · Additional forecast: "+p.rainForecast.toFixed(2)+" in · Event total: "+(p.rainBefore+p.rainForecast).toFixed(2)+" in":"")+" · Valid until "+p.expiresAtLabel;const n=document.createElement("p");n.textContent=p.note||"No forecaster note supplied.";const actions=document.createElement("div");actions.className="product-actions";const issued=document.createElement("span");issued.textContent="Issued "+p.issuedAt;const update=document.createElement("button");update.className="cancel-btn";update.textContent="Update";update.onclick=()=>{p.note=$("#product-text").value.trim()||p.note;p.threat=$("#product-threat").value;const params=readSevereParams();if(params.error){alert(params.error);return}const rain=readRainParams(p.type);if(rain.error){alert(rain.error);return}p.hailSize=params.hailSize;p.windSpeed=params.windSpeed;p.rainBefore=rain.rainBefore;p.rainForecast=rain.rainForecast;p.expiresAt=minutes+(+$("#product-duration").value);p.expiresAtLabel=timeAt(p.expiresAt);note(p.type+" updated; validity reset.");renderProducts()};const extend=document.createElement("button");extend.className="cancel-btn";extend.textContent="Extend";extend.onclick=()=>{p.expiresAt+=+$("#product-duration").value;p.expiresAtLabel=timeAt(p.expiresAt);note(p.type+" extended.");renderProducts()};const cancel=document.createElement("button");cancel.className="cancel-btn";cancel.textContent="Cancel";cancel.onclick=()=>{p.active=false;note(p.type+" cancelled.");renderProducts()};actions.append(issued,update,extend,cancel);c.append(top,meta,n,actions);list.append(c)})}
-function timeAt(total){return String(Math.floor(total/60)%24).padStart(2,"0")+":"+String(total%60).padStart(2,"0")+"Z"}
-function advance(){minutes+=5;step++;$("#sim-time").textContent=time();const e=env(),sf=Math.max(0,Math.min(1,(e.shear-10)/35)),hf=Math.max(0,Math.min(1,e.srh/250)),cape=Math.max(.25,Math.min(1.2,e.cape/1800)),growth=sf*(.35+.65*hf)*cape*A.updraft*.105;A.rotation=Math.max(0,Math.min(1,A.rotation+growth-.012));A.dbz=Math.max(42,Math.min(75,A.dbz+(step%4===0?1:0)));A.x=Math.max(.15,Math.min(.85,A.x+.008));A.y=Math.max(.15,Math.min(.85,A.y-.006));B.x=Math.max(.1,Math.min(.85,B.x+.005));B.y=Math.max(.1,Math.min(.85,B.y-.002));note("5-minute advance. Storm A rotation: "+A.rotation.toFixed(2)+".");products.forEach(p=>{if(p.active&&minutes>=p.expiresAt){p.active=false;note(p.type+" expired.")}});radar();renderProducts()}
-$("#advance-btn").onclick=advance;
-$("#reset-btn").onclick=()=>{minutes=1080;step=0;products=[];nextId=1;environment=null;Object.assign(A,{x:.48,y:.39,rotation:0,dbz:62,motion:35});Object.assign(B,{x:.24,y:.68});$("#sim-time").textContent=time();log.replaceChildren();note("Scenario reset.");showEnvironment();radar();renderProducts()};
-$("#radar-mode").onchange=radar;
-$("#product-type").addEventListener("change",refreshSevereParams);
-refreshSevereParams();
-document.querySelectorAll(".storm-row").forEach(row=>row.onclick=()=>{document.querySelectorAll(".storm-row").forEach(r=>r.classList.remove("selected"));row.classList.add("selected");selectedStorm=row.dataset.storm;radar();note("Storm "+selectedStorm+" selected.")});
-["#model-name","#model-run","#model-field","#forecast-hour"].forEach(s=>{$(s).addEventListener("input",models);$(s).addEventListener("change",models)});
-$("#issue-btn").onclick=()=>{const type=$("#product-type").value,area=$("#product-area").value,threat=$("#product-threat").value,noteText=$("#product-text").value.trim(),duration=+$("#product-duration").value,params=readSevereParams(),rain=readRainParams(type);if(params.error){alert(params.error);return}if(rain.error){alert(rain.error);return}const p={id:nextId++,type,area,threat,note:noteText,hailSize:params.hailSize,windSpeed:params.windSpeed,rainBefore:rain.rainBefore,rainForecast:rain.rainForecast,active:true,issuedAt:time(),expiresAt:minutes+duration,expiresAtLabel:timeAt(minutes+duration),storm:selectedStorm};products.push(p);$("#product-text").value="";note(type+" issued for "+area+" · Storm "+selectedStorm+".");renderProducts()};
-$("#environment-file").addEventListener("change",async event=>{const file=event.target.files?.[0];if(!file)return;try{const data=JSON.parse(await file.text()),t=data.thermodynamics||{},k=data.kinematics||{};const cape=Number(t.cape_jkg??data.cape_jkg??data.cape??0),shear=Number(k.bulk_shear_0_6km_kt??data.bulk_shear_0_6km_kt??data.shear??0),srh=Number(k.srh_0_3km_m2s2??data.srh_0_3km_m2s2??data.srh??0);if(![cape,shear,srh].every(Number.isFinite)||cape<0||shear<0||srh<0)throw new Error("Invalid CAPE/shear/SRH values");if(!cape&&!shear&&!srh)throw new Error("JSON does not contain recognized environment fields");environment={cape,shear,srh,label:data.name||data.schema||file.name};showEnvironment();note("Models-Sandbox environment imported.");event.target.value="";}catch(error){$("#environment-status").textContent="Import failed: "+error.message;event.target.value=""}});
-$("#clear-environment").onclick=()=>{environment=null;showEnvironment();note("Imported environment cleared; defaults restored.")};
-showEnvironment();models();radar();renderProducts();
+(()=> {
+  const $=s=>document.querySelector(s);
+  let minutes=1080,step=0,products=[],nextId=1,selectedStorm="A",environment=null;
+  const log=$("#event-log"),A= {
+    x:.48,y:.39,rotation:0,dbz:62,updraft:.72,motion:35
+  },B= {
+    x:.24,y:.68,rotation:0,dbz:48,motion:25
+  };
+  const time=()=>String(Math.floor(minutes/60)%24).padStart(2,"0")+":"+String(minutes%60).padStart(2,"0")+"Z";
+  function note(message) {
+    const li=document.createElement("li"),t=document.createElement("time"),v=document.createElement("span");t.textContent=time();v.textContent=message;li.append(t,v);log.prepend(li)
+  }
+  function env() {
+    return environment? {
+      shear:environment.shear||0,srh:environment.srh||0,cape:environment.cape||0
+    }
+    : {
+      shear:35,srh:150,cape:1800
+    }
+  }
+  function showEnvironment() {
+    const e=env();$("#env-cape").textContent=environment?(e.cape+" J/kg"):"Default";$("#env-shear").textContent=environment?(e.shear+" kt"):"Default";$("#env-srh").textContent=environment?(e.srh+" m²/s²"):"Default";$("#environment-status").textContent=environment?"Imported · "+(environment.label||"Models-Sandbox environment"):"No environment imported · Using scenario defaults"
+  }
+  function radar() {
+    const mode=$("#radar-mode").value;$("#radar-footer").textContent=mode==="velocity"?"STORM-RELATIVE VELOCITY · SIMULATED":"REFLECTIVITY · SIMULATED dBZ";$("#max-dbz").innerHTML=Math.round(A.dbz)+' <em>dBZ</em>';$("#storm-a-speed").textContent=Math.round(A.motion)+" kt";window.SWO?.updateRadar( {
+      mode,storms:[ {
+        ...A,id:"A"
+      }, {
+        ...B,id:"B"
+      }],selectedStorm
+    })
+  }
+  function models() {
+    const m=$("#model-name").value,r=$("#model-run").value,f=$("#model-field").value,h=+$("#forecast-hour").value;$("#forecast-hour-label").textContent="F"+String(h).padStart(3,"0");$("#model-summary-title").textContent=m+" · "+r+" · F"+String(h).padStart(3,"0");$("#model-summary-text").textContent=( {
+      reflectivity:"Simulated convective reflectivity.",cape:"Synthetic instability, not observed.",shear:"Illustrative environmental wind shear.",precip:"Synthetic accumulated precipitation."
+    })[f]+" Fictional training data."
+  }
+  function usesSevereParams(type) {
+    return type==="Special Weather Statement"||type==="Severe Thunderstorm Warning"
+  }
+  function usesRainParams(type) {
+    return ["Flash Flood Warning","Flash Flood Emergency","Flood Advisory"].includes(type)
+  }
+  function refreshRainParams() {
+    const show=usesRainParams($("#product-type").value);$("#rainfall-parameters").hidden=!show
+  }
+  function readRainParams(type) {
+    if(!usesRainParams(type))return {
+      rainBefore:null,rainForecast:null
+    };const before=$("#rain-before").value,forecast=$("#rain-forecast").value;if(before===""||forecast==="")return {
+      error:"Enter rainfall already received and additional rainfall expected."
+    };const rainBefore=Number(before),rainForecast=Number(forecast);if(!Number.isFinite(rainBefore)||rainBefore<0||rainBefore>100)return {
+      error:"Rainfall before alert must be between 0 and 100 inches."
+    };if(!Number.isFinite(rainForecast)||rainForecast<=0||rainForecast>100)return {
+      error:"Additional expected rainfall must be greater than 0 and no more than 100 inches."
+    };return {
+      rainBefore,rainForecast
+    }
+  }
+  function refreshSevereParams() {
+    const show=usesSevereParams($("#product-type").value);$("#severe-parameters").hidden=!show;$("#product-threat").value=show?"Large hail":$("#product-threat").value
+  }
+  function readSevereParams() {
+    if(!usesSevereParams($("#product-type").value))return {
+      hailSize:null,windSpeed:null
+    };const hail=$("#hail-size").value,wind=$("#wind-speed").value;if(hail===""||wind==="")return {
+      error:"Enter both hail size and wind gust."
+    };const hailSize=Number(hail),windSpeed=Number(wind);if(!Number.isFinite(hailSize)||hailSize<=0||hailSize>8)return {
+      error:"Hail size must be greater than 0 and no more than 8 inches."
+    };if(!Number.isFinite(windSpeed)||windSpeed<=0||windSpeed>250)return {
+      error:"Wind gust must be greater than 0 and no more than 250 mph."
+    };return {
+      hailSize,windSpeed
+    }
+  }
+  function renderProducts() {
+    const list=$("#product-list"),active=products.filter(p=>p.active);list.replaceChildren();$("#product-count").textContent=active.length+" ACTIVE";if(!active.length) {
+      const e=document.createElement("div");e.className="empty-state";e.textContent="No products active. Monitor the storms and issue a product when ready.";list.append(e);return
+    }
+    active.slice().reverse().forEach(p=> {
+      const c=document.createElement("article");c.className="product-card";const top=document.createElement("div");top.className="product-top";const title=document.createElement("strong");title.textContent=p.type+" · "+p.area;const status=document.createElement("span");status.className="status";status.textContent=(p.type.includes("Discussion")||p.type.includes("(MCD)")||p.type.includes("(MPD)"))?"DISCUSSION":"ACTIVE";top.append(title,status);const meta=document.createElement("p");meta.textContent="Threat: "+p.threat+(p.hailSize!==null&&p.hailSize!==undefined?" · Hail: "+p.hailSize.toFixed(2)+" in":"")+(p.windSpeed!==null&&p.windSpeed!==undefined?" · Wind: "+p.windSpeed+" mph":"")+(p.rainBefore!==null&&p.rainBefore!==undefined?" · Already fallen: "+p.rainBefore.toFixed(2)+" in · Additional forecast: "+p.rainForecast.toFixed(2)+" in · Event total: "+(p.rainBefore+p.rainForecast).toFixed(2)+" in":"")+" · Valid until "+p.expiresAtLabel;const n=document.createElement("p");n.textContent=p.note||"No forecaster note supplied.";const actions=document.createElement("div");actions.className="product-actions";const issued=document.createElement("span");issued.textContent="Issued "+p.issuedAt;const update=document.createElement("button");update.className="cancel-btn";update.textContent="Update";update.onclick=()=> {
+        p.note=$("#product-text").value.trim()||p.note;p.threat=$("#product-threat").value;const params=readSevereParams();if(params.error) {
+          alert(params.error);return
+        }
+        const rain=readRainParams(p.type);if(rain.error) {
+          alert(rain.error);return
+        }
+        p.hailSize=params.hailSize;p.windSpeed=params.windSpeed;p.rainBefore=rain.rainBefore;p.rainForecast=rain.rainForecast;p.expiresAt=minutes+(+$("#product-duration").value);p.expiresAtLabel=timeAt(p.expiresAt);note(p.type+" updated; validity reset.");renderProducts()
+      };const extend=document.createElement("button");extend.className="cancel-btn";extend.textContent="Extend";extend.onclick=()=> {
+        p.expiresAt+=+$("#product-duration").value;p.expiresAtLabel=timeAt(p.expiresAt);note(p.type+" extended.");renderProducts()
+      };const cancel=document.createElement("button");cancel.className="cancel-btn";cancel.textContent="Cancel";cancel.onclick=()=> {
+        p.active=false;note(p.type+" cancelled.");renderProducts()
+      };actions.append(issued,update,extend,cancel);c.append(top,meta,n,actions);list.append(c)
+    })
+  }
+  function timeAt(total) {
+    return String(Math.floor(total/60)%24).padStart(2,"0")+":"+String(total%60).padStart(2,"0")+"Z"
+  }
+  function advance() {
+    minutes+=5;step++;$("#sim-time").textContent=time();const e=env(),sf=Math.max(0,Math.min(1,(e.shear-10)/35)),hf=Math.max(0,Math.min(1,e.srh/250)),cape=Math.max(.25,Math.min(1.2,e.cape/1800)),growth=sf*(.35+.65*hf)*cape*A.updraft*.105;A.rotation=Math.max(0,Math.min(1,A.rotation+growth-.012));A.dbz=Math.max(42,Math.min(75,A.dbz+(step%4===0?1:0)));A.x=Math.max(.15,Math.min(.85,A.x+.008));A.y=Math.max(.15,Math.min(.85,A.y-.006));B.x=Math.max(.1,Math.min(.85,B.x+.005));B.y=Math.max(.1,Math.min(.85,B.y-.002));note("5-minute advance. Storm A rotation: "+A.rotation.toFixed(2)+".");products.forEach(p=> {
+      if(p.active&&minutes>=p.expiresAt) {
+        p.active=false;note(p.type+" expired.")
+      }
+    });radar();renderProducts()
+  }
+  $("#advance-btn").onclick=advance;
+  $("#reset-btn").onclick=()=> {
+    minutes=1080;step=0;products=[];nextId=1;environment=null;Object.assign(A, {
+      x:.48,y:.39,rotation:0,dbz:62,motion:35
+    });Object.assign(B, {
+      x:.24,y:.68
+    });$("#sim-time").textContent=time();log.replaceChildren();note("Scenario reset.");showEnvironment();radar();renderProducts()
+  };
+  $("#radar-mode").onchange=radar;
+  $("#product-type").addEventListener("change",refreshSevereParams);
+  refreshSevereParams();
+  document.querySelectorAll(".storm-row").forEach(row=>row.onclick=()=> {
+    document.querySelectorAll(".storm-row").forEach(r=>r.classList.remove("selected"));row.classList.add("selected");selectedStorm=row.dataset.storm;radar();note("Storm "+selectedStorm+" selected.")
+  });
+  ["#model-name","#model-run","#model-field","#forecast-hour"].forEach(s=> {
+    $(s).addEventListener("input",models);$(s).addEventListener("change",models)
+  });
+  $("#issue-btn").onclick=()=> {
+    const type=$("#product-type").value,area=$("#product-area").value,threat=$("#product-threat").value,noteText=$("#product-text").value.trim(),duration=+$("#product-duration").value,params=readSevereParams(),rain=readRainParams(type);if(params.error) {
+      alert(params.error);return
+    }
+    if(rain.error) {
+      alert(rain.error);return
+    }
+    const p= {
+      id:nextId++,type,area,threat,note:noteText,hailSize:params.hailSize,windSpeed:params.windSpeed,rainBefore:rain.rainBefore,rainForecast:rain.rainForecast,active:true,issuedAt:time(),expiresAt:minutes+duration,expiresAtLabel:timeAt(minutes+duration),storm:selectedStorm
+    };products.push(p);$("#product-text").value="";note(type+" issued for "+area+" · Storm "+selectedStorm+".");renderProducts()
+  };
+  $("#environment-file").addEventListener("change",async event=> {
+    const file=event.target.files?.[0];if(!file)return;try {
+      const data=JSON.parse(await file.text()),t=data.thermodynamics|| {
+      },k=data.kinematics|| {
+      };const cape=Number(t.cape_jkg??data.cape_jkg??data.cape??0),shear=Number(k.bulk_shear_0_6km_kt??data.bulk_shear_0_6km_kt??data.shear??0),srh=Number(k.srh_0_3km_m2s2??data.srh_0_3km_m2s2??data.srh??0);if(![cape,shear,srh].every(Number.isFinite)||cape<0||shear<0||srh<0)throw new Error("Invalid CAPE/shear/SRH values");if(!cape&&!shear&&!srh)throw new Error("JSON does not contain recognized environment fields");environment= {
+        cape,shear,srh,label:data.name||data.schema||file.name
+      };showEnvironment();note("Models-Sandbox environment imported.");event.target.value="";
+    }
+    catch(error) {
+      $("#environment-status").textContent="Import failed: "+error.message;event.target.value=""
+    }
+  });
+  $("#clear-environment").onclick=()=> {
+    environment=null;showEnvironment();note("Imported environment cleared; defaults restored.")
+  };
+  showEnvironment();models();radar();renderProducts();
 })();
