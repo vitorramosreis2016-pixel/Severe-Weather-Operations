@@ -62,6 +62,12 @@
           <label for="wind-speed">Wind gust (mph)</label><input id="wind-speed" type="number" min="0" max="250" step="1" placeholder="e.g. 60">
           <p class="fine-print">Enter the expected or observed maximum hail size and wind gust for this product.</p>
         </div>
+        <div id="rainfall-parameters" class="rainfall-parameters" hidden>
+          <div class="parameter-heading">Rainfall amounts · inches</div>
+          <label for="rain-before">Rainfall before alert (in)</label><input id="rain-before" type="number" min="0" max="100" step="0.01" placeholder="e.g. 2.50">
+          <label for="rain-forecast">Additional rainfall expected during alert (in)</label><input id="rain-forecast" type="number" min="0.01" max="100" step="0.01" placeholder="e.g. 3.00">
+          <p class="fine-print">Enter the amount already received before issuance and the additional amount expected through the product's expiration time.</p>
+        </div>
         <label for="product-threat">Primary threat</label><select id="product-threat"><option>Damaging wind</option><option>Large hail</option><option>Tornado</option><option>Flash flooding</option><option>Heavy rainfall</option><option>Multiple hazards</option><option>Situational awareness</option></select>
         <label for="product-text">Forecaster note / discussion</label><textarea id="product-text" rows="3" placeholder="Describe the simulated threat, confidence and supporting evidence..."></textarea>
         <button id="issue-btn" class="button primary">＋ Issue simulated product</button>
