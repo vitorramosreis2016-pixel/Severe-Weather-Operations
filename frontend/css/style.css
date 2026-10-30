@@ -602,3 +602,9 @@ footer{
 .product-actions button { font:10px Inter,sans-serif; }
 .products-panel optgroup { color:var(--cyan); }
 @media(max-width:600px) { .environment-metrics { gap:14px; } .product-actions { gap:6px; } }
+
+.severe-parameters { margin-top:12px; padding:12px; border:1px solid #38535e; border-radius:8px; background:#0e171e; }
+.severe-parameters[hidden] { display:none; }
+.severe-parameters .parameter-heading { margin-bottom:10px; color:var(--cyan); font:11px 'DM Mono',monospace; text-transform:uppercase; letter-spacing:.8px; }
+.severe-parameters label { display:block; margin:10px 0 6px; color:var(--muted); font:10px 'DM Mono',monospace; }
+.severe-parameters input { width:100%; padding:10px; border:1px solid #2c404d; border-radius:6px; background:#121c25; color:var(--text); font:13px Inter,sans-serif; }
