@@ -25,12 +25,13 @@
           <div class="storm-track"></div>
           <div class="city city-one">DODGE CITY</div><div class="city city-two">SALINA</div><div class="city city-three">WICHITA</div>
           <div class="radar-site">K</div>
-          <div class="map-footer">REFLECTIVITY · SIMULATED dBZ</div>
+          <div class="map-footer" id="radar-footer">REFLECTIVITY · SIMULATED dBZ</div>
         </div>
       </div>
       <div class="legend"><span><i class="legend-swatch green"></i>Light</span><span><i class="legend-swatch yellow"></i>Moderate</span><span><i class="legend-swatch red"></i>Strong</span><span><i class="legend-swatch purple"></i>Very strong</span></div>
-      <div class="map-controls"><button id="advance-btn" class="button secondary">▶ Advance 5 min</button><button id="reset-btn" class="button ghost">Reset scenario</button></div>
+      <div class="radar-toolbar"><label for="radar-mode">Radar product</label><select id="radar-mode"><option value="reflectivity">Reflectivity (dBZ)</option><option value="velocity">Storm-relative velocity (SRV)</option></select></div><div class="map-controls"><button id="advance-btn" class="button secondary">▶ Advance 5 min</button><button id="reset-btn" class="button ghost">Reset scenario</button></div>
     </section>
+    <section class="panel wind-panel"><div class="panel-head"><div><span class="eyebrow">ENVIRONMENT ENGINE</span><h2>Vertical wind profile</h2></div><span class="pill">EDITABLE</span></div><p class="wind-intro">Edite direção (°) e velocidade (kt) do vento em cada altitude. O perfil influencia o deslocamento e a rotação simulada.</p><div class="wind-grid"><span>Altitude</span><span>Direção</span><span>Velocidade (kt)</span><label>Superfície · 0 km</label><input id="wind-dir-0" type="number" min="0" max="359" value="150"><input id="wind-spd-0" type="number" min="0" max="150" value="10"><label>1 km</label><input id="wind-dir-1" type="number" min="0" max="359" value="180"><input id="wind-spd-1" type="number" min="0" max="150" value="25"><label>3 km</label><input id="wind-dir-3" type="number" min="0" max="359" value="220"><input id="wind-spd-3" type="number" min="0" max="150" value="40"><label>6 km</label><input id="wind-dir-6" type="number" min="0" max="359" value="250"><input id="wind-spd-6" type="number" min="0" max="150" value="55"></div><div class="wind-metrics"><div><small>0–6 KM BULK SHEAR</small><strong id="bulk-shear">— kt</strong></div><div><small>EST. 0–3 KM SRH</small><strong id="srh-value">— m²/s²</strong></div><div><small>MESOCYCLONE</small><strong id="rotation-status">Not organized</strong></div></div><p class="fine-print">Aproximação didática, não é uma simulação física completa nem saída de modelo meteorológico.</p></section>
     <section class="panel model-panel">
       <div class="panel-head"><div><span class="eyebrow">NUMERICAL GUIDANCE</span><h2>Model runs</h2></div><span class="pill">SIMULATED DATA</span></div>
       <div class="model-controls">
