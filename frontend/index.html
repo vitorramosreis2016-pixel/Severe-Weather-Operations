@@ -56,6 +56,12 @@
         </select>
         <label for="product-area">Affected area</label><select id="product-area"><option>Central Kansas</option><option>South-central Kansas</option><option>North-central Kansas</option><option>Entire forecast area</option></select>
         <label for="product-duration">Valid for</label><select id="product-duration"><option value="30">30 minutes</option><option value="60" selected>1 hour</option><option value="90">1 hour 30 minutes</option><option value="120">2 hours</option><option value="180">3 hours</option><option value="360">6 hours</option><option value="720">12 hours</option></select>
+        <div id="severe-parameters" class="severe-parameters" hidden>
+          <div class="parameter-heading">Severe storm parameters</div>
+          <label for="hail-size">Hail size (inches)</label><input id="hail-size" type="number" min="0" max="8" step="0.25" placeholder="e.g. 1.00">
+          <label for="wind-speed">Wind gust (mph)</label><input id="wind-speed" type="number" min="0" max="250" step="1" placeholder="e.g. 60">
+          <p class="fine-print">Enter the expected or observed maximum hail size and wind gust for this product.</p>
+        </div>
         <label for="product-threat">Primary threat</label><select id="product-threat"><option>Damaging wind</option><option>Large hail</option><option>Tornado</option><option>Flash flooding</option><option>Heavy rainfall</option><option>Multiple hazards</option><option>Situational awareness</option></select>
         <label for="product-text">Forecaster note / discussion</label><textarea id="product-text" rows="3" placeholder="Describe the simulated threat, confidence and supporting evidence..."></textarea>
         <button id="issue-btn" class="button primary">＋ Issue simulated product</button>
